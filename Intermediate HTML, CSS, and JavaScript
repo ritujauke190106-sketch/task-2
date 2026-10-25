@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MyWeb | Task 2</title>
+
+<style>
+:root {
+    --bg: #f4f6ff;
+    --card: #ffffff;
+    --text: #202747;
+    --muted: #69738d;
+    --primary: #6546e8;
+    --border: #e1e5f2;
+    --success: #13834a;
+    --danger: #dc3545;
+}
+
+body.dark {
+    --bg: #141827;
+    --card: #20263a;
+    --text: #f2f3ff;
+    --muted: #bdc4d8;
+    --primary: #9078ff;
+    --border: #3a425b;
+    --success: #65dfa0;
+    --danger: #ff8290;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    background: #202747;
+    color: white;
+    padding: 16px 7%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.logo {
+    color: #c2b5ff;
+    font-size: 25px;
+}
+
+nav {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+nav button {
+    color: white;
+    background: transparent;
+    padding: 9px 12px;
+    border: 0;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+nav button:hover,
+nav button.active {
+    background: #ffffff20;
+    color: #c2b5ff;
+}
+
+.hero {
+    text-align: center;
+    padding: 70px 20px;
+    background: linear-gradient(120deg, #dbeafe, #ede9fe);
+    color: #202747;
+}
+
+.hero h1 {
+    font-size: clamp(32px, 5vw, 50px);
+    margin: 10px 0;
+}
+
+.hero p {
+    max-width: 600px;
+    margin: auto;
+}
+
+.eyebrow {
+    color: var(--primary);
+    font-weight: bold;
+    font-size: 13px;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+}
+
+.actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 25px;
+}
+
+.btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 18px;
+    font: inherit;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn:hover {
+    opacity: 0.85;
+}
+
+.btn.secondary {
+    background: white;
+    color: #6546e8;
+    border: 1px solid #ddd7ff;
+}
+
+.content {
+    width: 90%;
+    max-width: 1100px;
+    margin: 40px auto;
+}
+
+.content h2 {
+    margin-bottom: 20px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.card, .form-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 6px 22px #18244a0b;
+}
+
+.card h3 {
+    color: var(--primary);
+    margin-bottom: 8px;
+}
+
+.card p, .muted {
+    color: var(--muted);
+}
+
+.emoji {
+    font-size: 30px;
+    margin-bottom: 8px;
+}
+
+.page {
+    width: 90%;
+    max-width: 650px;
+    margin: 40px auto;
+    flex: 1;
+}
+
+.page h1 {
+    font-size: 32px;
+    margin-bottom: 8px;
+}
+
+.page .muted {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin: 14px 0 5px;
+    font-weight: bold;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--card);
+    color: var(--text);
+    font: inherit;
+}
+
+input:focus, textarea:focus {
+    outline: 2px solid var(--primary);
+    outline-offset: 1px;
+}
+
+textarea {
+    resize: vertical;
+}
+
+.full {
+    width: 100%;
+    margin-top: 15px;
+}
+
+.status {
+    margin-top: 12px;
+    overflow-wrap: anywhere;
+}
+
+.status.success {
+    color: var(--success);
+}
+
+.status.error {
+    color: var(--danger);
+}
+
+.task-entry {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0 15px;
+}
+
+.task-entry input {
+    flex: 1;
+    min-width: 0;
+}
+
+.filters {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.filters button {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+.filters button.active {
+    background: var(--primary);
+    color: white;
+}
+
+#taskList {
+    list-style: none;
+}
+
+.task-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.task-item .check {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    accent-color: var(--primary);
+}
+
+.task-text {
+    flex: 1;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.task-text.completed {
+    text-decoration: line-through;
+    color: var(--muted);
+}
+
+.delete-btn {
+    background: var(--danger);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 7px 10px;
+    cursor: pointer;
+}
+
+.empty {
+    text-align: center;
+    padding: 20px 0;
+    color: var(--muted);
+}
+
+footer {
+    background: #202747;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    margin-top: 35px;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+button:focus-visible {
+    outline: 3px solid #a99aff;
+    outline-offset: 3px;
+}
+
+@media (max-width: 700px) {
+    header {
+        flex-direction: column;
+    }
+
+    nav {
+        justify-content: center;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hero {
+        padding: 45px 18px;
+    }
+
+    .page {
+        width: 94%;
+        margin: 25px auto;
+    }
+}
+
+@media (max-width: 420px) {
+    .card, .form-card {
+        padding: 18px;
+    }
+
+    .task-entry {
+        flex-wrap: wrap;
+    }
+
+    .task-entry input {
+        flex-basis: 100%;
+    }
+
+    nav {
+        gap: 3px;
+    }
+
+    nav button {
+        padding: 8px;
+        font-size: 13px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h2 class="logo">MyWeb ✦</h2>
+
+    <nav aria-label="Main navigation">
+        <button class="active" data-page="home">Home</button>
+        <button data-page="contact">Contact</button>
+        <button data-page="todo">To-Do List</button>
+        <button id="themeBtn">🌙 Dark Mode</button>
+    </nav>
+</header>
+
+<!-- HOME PAGE -->
+<main id="homePage">
+    <section class="hero">
+        <p class="eyebrow">WELCOME TO MY WEBSITE</p>
+        <h1>Learn. Create. Grow.</h1>
+        <p>I'm learning HTML, CSS and JavaScript to build
+        beautiful and interactive websites.</p>
+
+        <div class="actions">
+            <button class="btn" data-page="contact">Contact Me →</button>
+            <button class="btn secondary" data-page="todo">
+                Open To-Do List
+            </button>
+        </div>
+    </section>
+
+    <section class="content">
+        <h2>What I'm Learning</h2>
+        <div class="grid">
+            <article class="card">
+                <div class="emoji">🌐</div>
+                <h3>HTML</h3>
+                <p>Build webpage structure using HTML elements and forms.</p>
+            </article>
+
+            <article class="card">
+                <div class="emoji">🎨</div>
+                <h3>CSS</h3>
+                <p>Create responsive designs with Flexbox and CSS Grid.</p>
+            </article>
+
+            <article class="card">
+                <div class="emoji">⚡</div>
+                <h3>JavaScript</h3>
+                <p>Add form validation and dynamic interactive features.</p>
+            </article>
+        </div>
+    </section>
+</main>
+
+<!-- CONTACT PAGE -->
+<main id="contactPage" class="page" hidden>
+    <section class="form-card">
+        <p class="eyebrow">LET'S CONNECT</p>
+        <h1>Contact Me</h1>
+        <p class="muted">Please fill in all required fields.</p>
+
+        <form id="contactForm" novalidate>
+            <label for="name">Full Name *</label>
+            <input type="text" id="name"
+                   placeholder="Enter your name" required>
+
+            <label for="email">Email Address *</label>
+            <input type="email" id="email"
+                   placeholder="you@example.com" required>
+
+            <label for="subject">Subject *</label>
+            <input type="text" id="subject"
+                   placeholder="Enter subject" required>
+
+            <label for="message">Message *</label>
+            <textarea id="message" rows="5"
+                      placeholder="Write your message..."
+                      required></textarea>
+
+            <button type="submit" class="btn full">Send Message</button>
+            <p id="formStatus" class="status"
+               role="status" aria-live="polite"></p>
+        </form>
+    </section>
+</main>
+
+<!-- TO-DO PAGE -->
+<main id="todoPage" class="page" hidden>
+    <section class="form-card">
+        <p class="eyebrow">STAY PRODUCTIVE</p>
+        <h1>My To-Do List ✓</h1>
+        <p class="muted">Add, complete and manage your daily tasks.</p>
+
+        <form id="taskForm" class="task-entry">
+            <input type="text" id="taskInput"
+                   placeholder="What do you need to do?"
+                   maxlength="200" required>
+            <button type="submit" class="btn">+ Add</button>
+        </form>
+
+        <div class="filters">
+            <button type="button" data-filter="all" class="active">All</button>
+            <button type="button" data-filter="pending">Pending</button>
+            <button type="button" data-filter="completed">Completed</button>
+        </div>
+
+        <ul id="taskList"></ul>
+        <p id="taskCount" class="muted"></p>
+
+        <button type="button" id="clearCompleted" class="btn"
+                style="margin-top:15px;">
+            Clear Completed
+        </button>
+
+        <p id="taskStatus" class="status"
+           role="status" aria-live="polite"></p>
+    </section>
+</main>
+
+<footer>
+    <p>Task 2 — Intermediate Web Development ❤️</p>
+</footer>
+
+<script>
+// PAGE NAVIGATION
+const pages = {
+    home: document.getElementById("homePage"),
+    contact: document.getElementById("contactPage"),
+    todo: document.getElementById("todoPage")
+};
+
+function showPage(pageName) {
+    if (!pages[pageName]) return;
+
+    Object.keys(pages).forEach(function(name) {
+        pages[name].hidden = name !== pageName;
+    });
+
+    document.querySelectorAll("[data-page]").forEach(function(button) {
+        if (button.tagName === "BUTTON" &&
+            button.closest("nav")) {
+            button.classList.toggle(
+                "active",
+                button.dataset.page === pageName
+            );
+        }
+    });
+
+    history.replaceState(null, "", "#" + pageName);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+document.querySelectorAll("[data-page]").forEach(function(button) {
+    button.addEventListener("click", function() {
+        showPage(button.dataset.page);
+    });
+});
+
+function readPageFromHash() {
+    const pageName = location.hash.slice(1);
+    showPage(pages[pageName] ? pageName : "home");
+}
+
+window.addEventListener("hashchange", readPageFromHash);
+readPageFromHash();
+
+
+// DARK / LIGHT MODE
+const themeBtn = document.getElementById("themeBtn");
+
+try {
+    if (localStorage.getItem("myweb-theme") === "dark") {
+        document.body.classList.add("dark");
+    }
+} catch (error) {}
+
+function updateThemeButton() {
+    themeBtn.textContent = document.body.classList.contains("dark")
+        ? "☀️ Light Mode"
+        : "🌙 Dark Mode";
+}
+
+updateThemeButton();
+
+themeBtn.addEventListener("click", function() {
+    document.body.classList.toggle("dark");
+
+    try {
+        localStorage.setItem(
+            "myweb-theme",
+            document.body.classList.contains("dark") ? "dark" : "light"
+        );
+    } catch (error) {}
+
+    updateThemeButton();
+});
+
+
+// CONTACT FORM VALIDATION
+const contactForm = document.getElementById("contactForm");
+
+contactForm.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const subject = document.getElementById("subject").value.trim();
+    const message = document.getElementById("message").value.trim();
+    const status = document.getElementById("formStatus");
+
+    if (!name || !email || !subject || !message) {
+        status.textContent = "Please fill in all required fields.";
+        status.className = "status error";
+        return;
+    }
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailPattern.test(email)) {
+        status.textContent = "Please enter a valid email address.";
+        status.className = "status error";
+        document.getElementById("email").focus();
+        return;
+    }
+
+    status.textContent =
+        "Success! Form validated. Thank you, " + name + "!";
+    status.className = "status success";
+    contactForm.reset();
+});
+
+
+// TO-DO LIST WITH LOCAL STORAGE
+const taskForm = document.getElementById("taskForm");
+const taskInput = document.getElementById("taskInput");
+const taskList = document.getElementById("taskList");
+const taskCount = document.getElementById("taskCount");
+const taskStatus = document.getElementById("taskStatus");
+const clearCompleted = document.getElementById("clearCompleted");
+const filterButtons = document.querySelectorAll("[data-filter]");
+
+let tasks = [];
+let currentFilter = "all";
+
+try {
+    const saved = JSON.parse(localStorage.getItem("myweb-tasks") || "[]");
+
+    if (Array.isArray(saved)) {
+        tasks = saved.filter(function(task) {
+            return task &&
+                typeof task.id === "string" &&
+                typeof task.text === "string" &&
+                typeof task.completed === "boolean";
+        });
+    }
+} catch (error) {
+    tasks = [];
+}
+
+function saveTasks() {
+    try {
+        localStorage.setItem("myweb-tasks", JSON.stringify(tasks));
+    } catch (error) {
+        taskStatus.textContent = "Unable to save tasks in this browser.";
+        taskStatus.className = "status error";
+    }
+}
+
+function renderTasks() {
+    taskList.replaceChildren();
+
+    const visibleTasks = tasks.filter(function(task) {
+        if (currentFilter === "pending") return !task.completed;
+        if (currentFilter === "completed") return task.completed;
+        return true;
+    });
+
+    if (visibleTasks.length === 0) {
+        const empty = document.createElement("li");
+        empty.className = "empty";
+        empty.textContent = tasks.length === 0
+            ? "No tasks yet. Add your first task!"
+            : "No tasks in this category.";
+        taskList.appendChild(empty);
+    }
+
+    visibleTasks.forEach(function(task) {
+        const li = document.createElement("li");
+        li.className = "task-item";
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.className = "check";
+        checkbox.checked = task.completed;
+        checkbox.setAttribute("aria-label", "Complete task");
+
+        const text = document.createElement("span");
+        text.className = task.completed
+            ? "task-text completed"
+            : "task-text";
+        text.textContent = task.text;
+
+        const deleteButton = document.createElement("button");
+        deleteButton.type = "button";
+        deleteButton.className = "delete-btn";
+        deleteButton.textContent = "Delete";
+
+        checkbox.addEventListener("change", function() {
+            task.completed = checkbox.checked;
+            saveTasks();
+            renderTasks();
+        });
+
+        deleteButton.addEventListener("click", function() {
+            tasks = tasks.filter(function(item) {
+                return item.id !== task.id;
+            });
+
+            saveTasks();
+            renderTasks();
+            taskStatus.textContent = "Task deleted.";
+            taskStatus.className = "status success";
+        });
+
+        li.append(checkbox, text, deleteButton);
+        taskList.appendChild(li);
+    });
+
+    const pendingCount = tasks.filter(function(task) {
+        return !task.completed;
+    }).length;
+
+    taskCount.textContent =
+        tasks.length + " total task(s) • " +
+        pendingCount + " pending";
+
+    filterButtons.forEach(function(button) {
+        const active = button.dataset.filter === currentFilter;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-pressed", String(active));
+    });
+}
+
+taskForm.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const text = taskInput.value.trim();
+
+    if (!text) {
+        taskStatus.textContent = "Please enter a task.";
+        taskStatus.className = "status error";
+        return;
+    }
+
+    tasks.push({
+        id: Date.now().toString() + Math.random().toString(36).slice(2),
+        text: text,
+        completed: false
+    });
+
+    saveTasks();
+    currentFilter = "all";
+    renderTasks();
+
+    taskInput.value = "";
+    taskInput.focus();
+
+    taskStatus.textContent = "Task added successfully!";
+    taskStatus.className = "status success";
+});
+
+filterButtons.forEach(function(button) {
+    button.addEventListener("click", function() {
+        currentFilter = button.dataset.filter;
+        renderTasks();
+    });
+});
+
+clearCompleted.addEventListener("click", function() {
+    const oldLength = tasks.length;
+    tasks = tasks.filter(function(task) {
+        return !task.completed;
+    });
+
+    if (oldLength === tasks.length) {
+        taskStatus.textContent = "No completed tasks to clear.";
+        taskStatus.className = "status error";
+        return;
+    }
+
+    saveTasks();
+    renderTasks();
+
+    taskStatus.textContent = "Completed tasks cleared.";
+    taskStatus.className = "status success";
+});
+
+renderTasks();
+</script>
+
+</body>
+</html>
